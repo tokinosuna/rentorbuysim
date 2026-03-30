@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rent or Buy? The Ultimate Calculator ✨</title>
+    <!-- Meta description for SEO & Accessibility -->
+    <meta name="description" content="A fully accessible mathematical simulation to calculate whether you should rent or buy a house based on opportunity cost and compound interest.">
     
-    <!-- Fonts: Outfit (Clean/Modern), Lora (Academy Serif), VT323 (Retro Numbers) -->
+    <title>Rent or Buy? Simulator</title>
+     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⾕</text></svg>">
+    <!-- Fonts: Outfit (Clean Sans), Lora (Academy Serif), VT323 (Retro Numbers) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;600&family=VT323&display=swap" rel="stylesheet">
@@ -15,44 +18,63 @@
 
     <style>
         /* =========================================
-           1. THEME VARIABLES (Low Saturation & Premium)
+           1. THEME VARIABLES (Low Saturation & Elegant)
            ========================================= */
         :root {
-            /* DEFAULT: Muted Y2K Academy (Low Saturation) */
-            --bg-color: #F8F6F0;       /* Warm paper white */
+            /* DEFAULT: Editorial Minimal (Clean, Academic, Beige/Gray) */
+            --bg-color: #F7F6F2;
             --paper-bg: #FFFFFF;
-            --primary: #DDA7A5;        /* Dusty Rose */
-            --primary-light: #F4EAE9;
-            --secondary: #A3B5C1;      /* Foggy Blue */
-            --text-main: #5A5A5A;
+            --primary: #DDA7A5;       
+            --primary-light: #E8ECEF;
+            --secondary: #A3B5C1;     
+            --text-main: #5C5C5C;
             --text-heading: #2C3032;
-            --border-color: #E2DDD5;
-            --margin-line: #E8B4B8;    /* Notebook left margin */
-            --radius: 12px;
-            --shadow: 0 12px 35px rgba(0, 0, 0, 0.04);
-            --focus-ring: 3px solid var(--primary);
+            --border-color: #E0DBD5;
+            --margin-line: #8C9CA3;
+            --radius: 8px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            --focus-ring: 3px solid var(--text-heading);
             --font-main: 'Outfit', sans-serif;
             --font-heading: 'Lora', serif;
             --font-num: 'VT323', monospace;
             --pattern: linear-gradient(var(--border-color) 1px, transparent 1px), linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
         }
 
-        /* THEME: Night Mode (Cozy Dark Study Room) */
+        /* THEME: Dreamy Y2K (Muted pastel pinks & purples, highly structured) */
+        body.theme-y2k {
+            --bg-color: #FAF5F7;
+            --paper-bg: #FFFFFF;
+            --primary: #C5A3B5;        /* Dusty Rose */
+            --primary-light: #F4EAEF;
+            --secondary: #B4ADD1;      /* Muted Lavender */
+            --text-main: #685A62;
+            --text-heading: #4A3C44;
+            --border-color: #E8DCE2;
+            --margin-line: #C5A3B5;
+            --radius: 16px;
+            --shadow: 0 12px 35px rgba(197, 163, 181, 0.15);
+            --focus-ring: 3px dashed var(--primary);
+            --font-heading: 'Outfit', sans-serif; /* Keep it clean sans-serif for Y2K */
+            --pattern: radial-gradient(circle, var(--border-color) 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
+        }
+
+        /* THEME: Night Study (Cozy Dark Mode) */
         body.theme-dark {
             --bg-color: #1A1C20;
             --paper-bg: #24272C;
-            --primary: #B5939E;        /* Muted Mauve */
-            --primary-light: #332B2E;
+            --primary: #94A8B3;        
+            --primary-light: #33393D;
             --secondary: #7A8B99;
-            --text-main: #C4C4C4;
-            --text-heading: #F0F0F0;
+            --text-main: #BDBDBD;
+            --text-heading: #F5F5F5;
             --border-color: #383C42;
             --margin-line: #52474A;
-            --shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
-            --pattern: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            --shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+            --pattern: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
         }
 
-        /* THEME: Colorblind Safe (Neat & High Contrast) */
+        /* THEME: Colorblind Safe (WCAG AAA Contrast) */
         body.theme-colorblind {
             --bg-color: #FFFFFF;
             --paper-bg: #F0F4F8;
@@ -61,14 +83,15 @@
             --secondary: #DC3220;      /* Safe Orange/Red */
             --text-main: #111111;
             --text-heading: #000000;
-            --border-color: #999999;
+            --border-color: #777777;
             --margin-line: #005AB5;
-            --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            --shadow: none;
+            --border-style: 2px solid var(--border-color);
             --pattern: none;
         }
 
         /* =========================================
-           2. GLOBAL, SCROLLBAR & SELECTION
+           2. GLOBAL & WCAG ACCESSIBILITY
            ========================================= */
         * { box-sizing: border-box; }
 
@@ -81,13 +104,18 @@
             font-family: var(--font-main);
             font-size: 1.1rem;
             line-height: 1.7;
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition: background-color 0.4s ease, color 0.4s ease;
             overflow-x: hidden;
         }
 
-        /* Big Text Mode */
-        body.size-large { font-size: 1.4rem; }
-        body.size-large h1 { font-size: 3.5rem; }
+        /* Screen Reader Only (Hidden visually, read by VoiceOver/NVDA) */
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
+        }
+
+        /* Visible Focus Ring for Keyboard Users (WCAG Requirement) */
+        *:focus-visible { outline: var(--focus-ring); outline-offset: 4px; border-radius: 4px; }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -95,12 +123,12 @@
         ::-webkit-scrollbar-thumb { background: var(--secondary); border-radius: 10px; border: 2px solid var(--bg-color); }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        /* Custom Selection */
+        /* Custom Text Selection */
         ::selection { background: var(--primary); color: #FFF; }
-        body.theme-dark ::selection { background: var(--secondary); color: #FFF; }
 
-        /* Keyboard Focus - Essential for A11y */
-        *:focus-visible { outline: var(--focus-ring); outline-offset: 4px; border-radius: 4px; }
+        /* Big Text Mode */
+        body.size-large { font-size: 1.4rem; }
+        body.size-large h1 { font-size: 3.2rem; }
 
         /* =========================================
            3. LAYOUT & TYPOGRAPHY
@@ -109,102 +137,76 @@
 
         header { text-align: center; margin-bottom: 4rem; }
         
-        h1 {
-            font-family: var(--font-heading);
-            font-size: 3.2rem; color: var(--text-heading);
-            margin: 0; font-weight: 600; letter-spacing: -0.5px;
-        }
+        h1 { font-family: var(--font-heading); font-size: 3rem; color: var(--text-heading); margin: 0; font-weight: 600; letter-spacing: -0.5px; }
 
         .badge {
-            display: inline-block; background: var(--primary-light); color: var(--primary);
+            display: inline-block; background: var(--bg-color); color: var(--text-heading);
             padding: 6px 16px; border-radius: 30px; font-size: 0.9rem; font-weight: 600;
-            margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px;
-            border: 1px solid var(--primary);
+            margin-bottom: 1.5rem; border: 1px solid var(--primary);
         }
 
-        h2 { 
-            font-family: var(--font-heading); color: var(--text-heading); 
-            font-size: 1.8rem; margin-top: 0; margin-bottom: 1.5rem;
-        }
+        h2 { font-family: var(--font-heading); color: var(--text-heading); font-size: 1.8rem; margin-top: 0; margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary-light); padding-bottom: 10px;}
 
         /* =========================================
-           4. COMPONENTS (The Neat Academy Notebook)
+           4. COMPONENTS (Academy Notebook)
            ========================================= */
-        /* Section Cards */
         .notebook-section {
-            background: var(--paper-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 2.5rem 3rem; 
-            margin-bottom: 3rem;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-            transition: box-shadow 0.3s ease;
-        }
-        
-        .notebook-section:hover { box-shadow: 0 16px 45px rgba(0, 0, 0, 0.06); }
-
-        /* Notebook Margin Line (Academy Vibe) */
-        .notebook-section::before {
-            content: ''; position: absolute; top: 0; left: 30px;
-            width: 2px; height: 100%; background: var(--margin-line); opacity: 0.6;
-        }
-        .notebook-section::after {
-            content: ''; position: absolute; top: 0; left: 36px;
-            width: 1px; height: 100%; background: var(--margin-line); opacity: 0.3;
+            background: var(--paper-bg); border: 1px solid var(--border-color);
+            border-radius: var(--radius); padding: 2.5rem 3rem; margin-bottom: 3rem;
+            box-shadow: var(--shadow); position: relative; overflow: hidden;
+            transition: box-shadow 0.3s ease, border-radius 0.3s ease;
         }
 
-        /* Offset content slightly to clear the margin lines */
+        /* Academy Margin Line */
+        .notebook-section::before { content: ''; position: absolute; top: 0; left: 30px; width: 2px; height: 100%; background: var(--primary); opacity: 0.5; }
+        .notebook-section::after { content: ''; position: absolute; top: 0; left: 36px; width: 1px; height: 100%; background: var(--margin-line); opacity: 0.2; }
         .section-content { position: relative; z-index: 2; padding-left: 1.5rem; }
 
-        /* Inputs Grid */
+        /* Forms & Inputs */
         .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; }
-        
         .input-group label { display: block; font-weight: 600; margin-bottom: 0.6rem; color: var(--text-heading); font-size: 0.95rem; }
         
         input[type="number"], input[type="range"] {
             width: 100%; padding: 14px; border: 1px solid var(--border-color);
-            border-radius: 8px; font-family: var(--font-main); font-size: 1.1rem;
+            border-radius: 6px; font-family: var(--font-main); font-size: 1.1rem;
             background: var(--bg-color); color: var(--text-heading);
             transition: border-color 0.3s, box-shadow 0.3s;
         }
-        input[type="number"]:focus { border-color: var(--primary); background: var(--paper-bg); box-shadow: 0 0 0 4px var(--primary-light); outline: none; }
-        
-        /* Range Slider Styling */
+        input[type="number"]:focus { border-color: var(--primary); background: var(--paper-bg); outline: none; }
         input[type="range"] { padding: 0; background: transparent; accent-color: var(--primary); cursor: pointer; }
 
-        /* Advanced Options Details */
-        details {
-            margin-top: 2rem; padding: 1.5rem; border: 1px dashed var(--border-color);
-            border-radius: 8px; background: transparent;
-        }
-        summary { font-weight: 600; cursor: pointer; color: var(--secondary); outline: none; font-family: var(--font-heading); }
-        summary:hover { color: var(--primary); }
+        details { margin-top: 2rem; padding: 1.5rem; border: 1px dashed var(--border-color); border-radius: 8px; }
+        summary { font-weight: 600; cursor: pointer; color: var(--text-main); font-family: var(--font-heading); outline: none; }
+        summary:hover, summary:focus-visible { color: var(--primary); }
 
         /* Results Area */
         .results-flex { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 2rem; }
         .result-card {
             flex: 1; min-width: 260px; border: 1px solid var(--border-color); background: var(--bg-color);
-            border-radius: 8px; padding: 2rem; text-align: center; transition: all 0.4s ease;
+            border-radius: var(--radius); padding: 2rem; text-align: center; transition: all 0.4s ease;
         }
-        .result-card.winner { background: var(--primary-light); border-color: var(--primary); }
+        .result-card.winner { background: var(--primary-light); border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
         .result-card .label { font-family: var(--font-heading); font-weight: 600; font-size: 1.2rem; color: var(--text-heading); }
         .big-num { display: block; font-family: var(--font-num); font-size: 3.5rem; font-weight: 400; color: var(--text-heading); margin: 10px 0; letter-spacing: 2px;}
-        .result-card.winner .big-num { color: var(--primary); }
+        .result-card.winner .big-num { color: var(--primary); font-weight: bold; }
 
-        /* Q&A Cards (Neat Index Cards instead of rotated sticky notes) */
+        .verdict-box {
+            margin-top: 2rem; padding: 1.5rem; background: var(--bg-color); 
+            border-left: 4px solid var(--primary); border-radius: 0 var(--radius) var(--radius) 0; 
+            font-family: var(--font-heading); font-size: 1.2rem; color: var(--text-heading);
+        }
+
+        /* Q&A 6 Cards Grid */
         .qna-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
         .index-card {
             padding: 1.8rem; background: var(--bg-color); border: 1px solid var(--border-color);
-            border-top: 4px solid var(--secondary); /* Color coding */
-            border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid var(--secondary); border-radius: var(--radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .index-card:nth-child(2) { border-top-color: var(--primary); }
-        .index-card:nth-child(3) { border-top-color: #D4C4B7; }
-        .index-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
-        .index-card h3 { font-family: var(--font-heading); color: var(--text-heading); margin-top: 0; font-size: 1.3rem; }
+        .index-card:nth-child(even) { border-top-color: var(--primary); }
+        .index-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+        .index-card h3 { font-family: var(--font-heading); color: var(--text-heading); margin-top: 0; font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .index-card p { margin: 0; font-size: 0.95rem; }
 
         /* =========================================
            5. MODALS & FAB (Settings)
@@ -214,15 +216,15 @@
             padding: 3rem; max-width: 550px; box-shadow: var(--shadow);
             background: var(--paper-bg); color: var(--text-main); text-align: center;
         }
-        dialog::backdrop { background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
-        dialog h2 { font-family: var(--font-heading); font-size: 2.2rem; }
+        dialog::backdrop { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        dialog h2 { font-family: var(--font-heading); font-size: 2rem; margin-top: 0; color: var(--text-heading); }
         
         .btn {
-            background: var(--primary); color: white; border: none; padding: 12px 28px;
+            background: var(--primary); color: var(--paper-bg); border: none; padding: 12px 28px;
             font-size: 1.1rem; border-radius: 30px; cursor: pointer; font-family: var(--font-main); 
-            font-weight: 600; transition: background 0.3s, transform 0.2s;
+            font-weight: 600; transition: opacity 0.3s;
         }
-        .btn:hover { background: var(--text-heading); transform: scale(1.02); }
+        .btn:hover, .btn:focus-visible { opacity: 0.8; }
 
         /* Settings Menu */
         .fab-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 100; text-align: right; }
@@ -232,54 +234,55 @@
             box-shadow: var(--shadow); text-align: left; opacity: 0; transform: translateY(10px);
         }
         .fab {
-            background: var(--text-heading); color: #FFF; width: 56px; height: 56px;
+            background: var(--text-heading); color: var(--paper-bg); width: 56px; height: 56px;
             border-radius: 50%; border: none; font-size: 1.5rem; cursor: pointer;
             box-shadow: 0 6px 16px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center;
             transition: transform 0.3s;
         }
-        .fab:hover { transform: rotate(90deg); }
+        .fab:hover, .fab:focus-visible { transform: scale(1.1); }
         
         .setting-btn {
             display: block; width: 100%; text-align: left; background: none; border: none;
             padding: 10px 12px; cursor: pointer; font-family: var(--font-main); font-size: 0.95rem; 
             color: var(--text-heading); border-radius: 6px; transition: background 0.2s;
         }
-        .setting-btn:hover { background: var(--bg-color); color: var(--primary); }
+        .setting-btn:hover, .setting-btn:focus-visible { background: var(--bg-color); color: var(--primary); }
 
         hr.soft { border: 0; border-top: 1px solid var(--border-color); margin: 10px 0; }
-
         footer { text-align: center; opacity: 0.6; margin-top: 4rem; font-size: 0.9rem; padding-bottom: 2rem; }
     </style>
 </head>
 <body>
 
-    <!-- 🌟 WELCOME POPUP -->
+    <!-- 🌟 WELCOME POPUP (WCAG Native Dialog) -->
     <dialog id="welcomeModal" aria-labelledby="modalTitle" aria-describedby="modalDesc">
         <h2 id="modalTitle">Welcome, Scholar. 📚</h2>
         <p id="modalDesc" style="margin-bottom: 2rem;">
             Before we crunch the numbers, here's a quick manual:<br><br>
             ⌨️ <strong>Keyboard Nav:</strong> Press <code>Tab</code> to navigate, <code>Space/Enter</code> to select.<br>
-            👁️ <strong>Accessibility:</strong> Screen readers will automatically announce result changes.<br>
-            ⚙️ <strong>Settings:</strong> Click the gear icon below to change themes or text size.
+            👁️ <strong>Accessibility:</strong> Screen readers are fully supported with ARIA live regions.<br>
+            ⚙️ <strong>Themes:</strong> Click the gear icon below to change to Dreamy Y2K, Night, or Colorblind mode.
         </p>
         <button class="btn" id="closeModalBtn" autofocus>Let's Analyze</button>
     </dialog>
 
-    <!-- ⚙️ SETTINGS FAB -->
+    <!-- ⚙️ SETTINGS FAB (Accessible Menu) -->
     <div class="fab-container">
-        <div class="settings-menu" id="settingsMenu" role="menu">
+        <!-- aria-hidden controlled via JS, role="menu" -->
+        <div class="settings-menu" id="settingsMenu" role="menu" aria-hidden="true">
             <strong style="display:block; margin-bottom:10px; color:var(--text-heading); padding-left:12px;">Appearance ✨</strong>
-            <button class="setting-btn" onclick="setTheme('default')" role="menuitem">📓 Y2K Academy (Default)</button>
+            <button class="setting-btn" onclick="setTheme('default')" role="menuitem">📓 Editorial Minimal (Default)</button>
+            <button class="setting-btn" onclick="setTheme('y2k')" role="menuitem">🌸 Dreamy Y2K</button>
             <button class="setting-btn" onclick="setTheme('dark')" role="menuitem">🌙 Night Study</button>
             <button class="setting-btn" onclick="setTheme('colorblind')" role="menuitem">👁️ Colorblind Safe</button>
             <hr class="soft">
-            <button class="setting-btn" onclick="document.body.classList.toggle('size-large')" role="menuitem">A^ Toggle Big Text</button>
+            <button class="setting-btn" onclick="document.body.classList.toggle('size-large')" role="menuitem">Aa Toggle Big Text</button>
         </div>
         <button class="fab" id="fabBtn" aria-label="Open Settings Menu" aria-haspopup="true" aria-expanded="false">⚙</button>
     </div>
 
     <!-- MAIN CONTENT -->
-    <div class="container">
+    <main class="container">
         <header class="gsap-anim">
             <div class="badge">Hackonomics 2026 Project</div>
             <h1>Rent vs. Buy Simulator</h1>
@@ -287,26 +290,26 @@
         </header>
 
         <!-- SECTION 1: INPUTS -->
-        <section class="notebook-section gsap-anim">
+        <section class="notebook-section gsap-anim" aria-labelledby="sec1-title">
             <div class="section-content">
-                <h2>1. The Reality Check 📝</h2>
-                <div class="grid-2">
+                <h2 id="sec1-title">1. The Reality Check 📝</h2>
+                <form onsubmit="event.preventDefault();" class="grid-2">
                     <div class="input-group">
                         <label for="rent">Current Monthly Rent ($)</label>
-                        <input type="number" id="rent" value="2000" oninput="calculate()" tabindex="0">
+                        <input type="number" id="rent" value="2000" min="0" oninput="calculate()">
                     </div>
                     <div class="input-group">
                         <label for="price">Target Home Price ($)</label>
-                        <input type="number" id="price" value="500000" oninput="calculate()" tabindex="0">
+                        <input type="number" id="price" value="500000" min="0" oninput="calculate()">
                     </div>
                     <div class="input-group" style="grid-column: 1 / -1;">
-                        <label for="years">Investment Timeline: <span id="yearsLabel" style="color:var(--primary); font-family:var(--font-heading); font-size:1.2rem;">30</span> Years</label>
+                        <label for="years">Investment Timeline: <span id="yearsLabel" style="color:var(--text-heading); font-family:var(--font-num); font-size:1.4rem;">30</span> Years</label>
                         <input type="range" id="years" min="5" max="50" value="30" aria-valuemin="5" aria-valuemax="50" aria-valuenow="30" 
-                               oninput="document.getElementById('yearsLabel').innerText = this.value; this.setAttribute('aria-valuenow', this.value); calculate()" tabindex="0">
+                               oninput="document.getElementById('yearsLabel').innerText = this.value; this.setAttribute('aria-valuenow', this.value); calculate()">
                     </div>
-                </div>
+                </form>
 
-                <details tabindex="0">
+                <details>
                     <summary>Advanced Engine Parameters</summary>
                     <div class="grid-2" style="margin-top: 1.5rem;">
                         <div class="input-group">
@@ -339,47 +342,66 @@
         </section>
 
         <!-- SECTION 2: RESULTS -->
-        <section class="notebook-section gsap-anim" aria-live="polite" aria-atomic="true">
+        <!-- Note: We separate visual GSAP animation from Screen Reader text to prevent SR spam -->
+        <section class="notebook-section gsap-anim" aria-labelledby="sec2-title">
             <div class="section-content">
-                <h2>2. The Verdict ⚖️</h2>
+                <h2 id="sec2-title">2. The Verdict ⚖️</h2>
                 <p>Projected Total Net Worth after <span id="resYears" style="font-weight:600;">30</span> years (Assets minus Debts):</p>
                 
                 <div class="results-flex">
-                    <div class="result-card" id="cardBuy" tabindex="0">
-                        <div class="label">If you BUY 🏠</div>
-                        <span class="big-num" id="outBuy">$0</span>
+                    <div class="result-card" id="cardBuy">
+                        <div class="label" id="labelBuy">If you BUY 🏠</div>
+                        <!-- Visual Only -->
+                        <span class="big-num" id="outBuyVis" aria-hidden="true">$0</span>
                         <small>House Value - Remaining Loan</small>
                     </div>
-                    <div class="result-card" id="cardRent" tabindex="0">
-                        <div class="label">If you RENT 📈</div>
-                        <span class="big-num" id="outRent">$0</span>
+                    <div class="result-card" id="cardRent">
+                        <div class="label" id="labelRent">If you RENT 📈</div>
+                        <!-- Visual Only -->
+                        <span class="big-num" id="outRentVis" aria-hidden="true">$0</span>
                         <small>Liquid Investment Portfolio</small>
                     </div>
                 </div>
                 
-                <div id="verdictMsg" style="margin-top: 2rem; padding: 1.5rem; background: var(--bg-color); border-left: 4px solid var(--primary); border-radius: 0 8px 8px 0; font-family: var(--font-heading); font-size: 1.2rem; color: var(--text-heading);">
+                <!-- Screen Reader Only Live Region -->
+                <div class="sr-only" aria-live="polite" aria-atomic="true" id="srAnnouncement"></div>
+
+                <!-- Visual Verdict -->
+                <div class="verdict-box" id="verdictMsg" aria-hidden="true">
                     Calculating the future...
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 3: EDUCATION -->
-        <section class="notebook-section gsap-anim">
+        <!-- SECTION 3: EDUCATION (6 Concepts) -->
+        <section class="notebook-section gsap-anim" aria-labelledby="sec3-title">
             <div class="section-content">
-                <h2>3. Economic Concepts 💡</h2>
+                <h2 id="sec3-title">3. Economic Concepts 💡</h2>
                 <div class="qna-grid">
-                    <div class="index-card" tabindex="0">
-                        <h3>Opportunity Cost</h3>
-                        <p>When you lock cash into a house downpayment, you lose the opportunity to earn 7% annually in the stock market. Our engine calculates this loss exactly!</p>
-                    </div>
-                    <div class="index-card" tabindex="0">
-                        <h3>Sunk Costs vs Equity</h3>
-                        <p>Rent is "paying someone else's mortgage", but buying has unrecoverable costs too! Mortgage interest, property taxes, and maintenance are money you never get back.</p>
-                    </div>
-                    <div class="index-card" tabindex="0">
-                        <h3>Compound Interest</h3>
-                        <p>By renting and investing the monthly difference, your money makes money. Over 30 years, that snowball effect is mathematically massive.</p>
-                    </div>
+                    <article class="index-card" tabindex="0" aria-labelledby="q1">
+                        <h3 id="q1">1. Opportunity Cost</h3>
+                        <p>Locking cash into a house downpayment means losing the opportunity to earn 7-10% annually in the stock market.</p>
+                    </article>
+                    <article class="index-card" tabindex="0" aria-labelledby="q2">
+                        <h3 id="q2">2. Sunk Costs vs Equity</h3>
+                        <p>Rent is often called "throwing money away", but mortgage interest, property taxes, and repairs are also unrecoverable sunk costs.</p>
+                    </article>
+                    <article class="index-card" tabindex="0" aria-labelledby="q3">
+                        <h3 id="q3">3. Compound Interest</h3>
+                        <p>Renting only wins if you actually invest the difference. Over 30 years, consistent market investing snowballs massively.</p>
+                    </article>
+                    <article class="index-card" tabindex="0" aria-labelledby="q4">
+                        <h3 id="q4">4. Liquidity</h3>
+                        <p>Stocks can be sold in seconds if you need cash. A house is illiquid—taking months to sell and costing 6% in realtor fees.</p>
+                    </article>
+                    <article class="index-card" tabindex="0" aria-labelledby="q5">
+                        <h3 id="q5">5. Inflation Hedge</h3>
+                        <p>A 30-year fixed mortgage locks in your housing payment, protecting you from inflation, whereas rent generally increases every year.</p>
+                    </article>
+                    <article class="index-card" tabindex="0" aria-labelledby="q6">
+                        <h3 id="q6">6. The Mobility Premium</h3>
+                        <p>If you move within 5-7 years, buying usually loses money due to closing costs. Renting provides the flexibility to relocate easily.</p>
+                    </article>
                 </div>
             </div>
         </section>
@@ -388,76 +410,82 @@
             <p>Built with ❤️ for Hackonomics 2026.</p>
             <p>Disclaimer: This is a mathematical simulation, not certified financial advice.</p>
         </footer>
-    </div>
+    </main>
 
     <!-- =========================================
          JAVASCRIPT LOGIC & GSAP
          ========================================= -->
     <script>
-        // --- 1. GSAP INITIAL ANIMATIONS ---
-        // Smooth entrance for Awwwards feeling
+        // --- 1. GSAP ENTRANCE ANIMATIONS ---
         window.addEventListener('load', () => {
-            gsap.from(".gsap-anim", {
-                y: 40,
-                opacity: 0,
-                duration: 1,
-                stagger: 0.15,
-                ease: "power3.out",
-                delay: 0.2
-            });
+            gsap.from(".gsap-anim", { y: 30, opacity: 0, duration: 0.8, stagger: 0.15, ease: "power2.out", delay: 0.1 });
         });
 
-        // --- 2. POPUP & A11Y LOGIC ---
+        // --- 2. MODAL & A11Y FOCUS MANAGEMENT ---
         const modal = document.getElementById('welcomeModal');
         const closeBtn = document.getElementById('closeModalBtn');
         
         window.addEventListener('DOMContentLoaded', () => {
-            modal.showModal();
+            modal.showModal(); // Native dialog handles focus trapping automatically
         });
 
         closeBtn.addEventListener('click', () => {
-            // GSAP fade out modal
-            gsap.to(modal, { opacity: 0, scale: 0.95, duration: 0.3, onComplete: () => {
+            gsap.to(modal, { opacity: 0, y: -20, duration: 0.2, onComplete: () => {
                 modal.close();
-                modal.style.opacity = 1; // reset for future
-                modal.style.scale = 1;
-                calculate(); // Run math after reading
+                modal.style.opacity = 1; 
+                modal.style.transform = "none";
+                calculate(); // Run initial math
             }});
         });
 
-        // --- 3. SETTINGS & THEMES LOGIC ---
+        // --- 3. FAB SETTINGS MENU (Keyboard Accessible) ---
         const fabBtn = document.getElementById('fabBtn');
         const settingsMenu = document.getElementById('settingsMenu');
 
         fabBtn.addEventListener('click', () => {
             const isExpanded = fabBtn.getAttribute('aria-expanded') === 'true';
-            fabBtn.setAttribute('aria-expanded', !isExpanded);
             
             if(!isExpanded) {
+                fabBtn.setAttribute('aria-expanded', 'true');
+                settingsMenu.setAttribute('aria-hidden', 'false');
                 settingsMenu.style.display = 'block';
-                gsap.to(settingsMenu, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.7)" });
+                gsap.to(settingsMenu, { opacity: 1, y: 0, duration: 0.3, ease: "back.out(1.5)" });
+                // Move focus to first menu item for keyboard users
+                settingsMenu.querySelector('button').focus();
             } else {
-                gsap.to(settingsMenu, { opacity: 0, y: 10, duration: 0.2, onComplete: () => {
-                    settingsMenu.style.display = 'none';
-                }});
+                closeMenu();
             }
         });
 
+        function closeMenu() {
+            fabBtn.setAttribute('aria-expanded', 'false');
+            settingsMenu.setAttribute('aria-hidden', 'true');
+            gsap.to(settingsMenu, { opacity: 0, y: 10, duration: 0.2, onComplete: () => {
+                settingsMenu.style.display = 'none';
+            }});
+            fabBtn.focus(); // Return focus to FAB
+        }
+
+        // Close menu on Escape key
+        settingsMenu.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeMenu();
+        });
+
         function setTheme(themeName) {
-            document.body.classList.remove('theme-dark', 'theme-colorblind');
+            document.body.classList.remove('theme-y2k', 'theme-dark', 'theme-colorblind');
             if (themeName !== 'default') {
                 document.body.classList.add(`theme-${themeName}`);
             }
-            fabBtn.click(); // Close menu
+            closeMenu();
         }
 
-        // --- 4. THE FINANCIAL ENGINE & GSAP COUNTER ---
-        // Store current values so GSAP knows where to count from
+        // --- 4. FINANCIAL ENGINE & ACCESSIBLE UPDATES ---
         let currentDisplayVals = { buy: 0, rent: 0 };
         const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+        let debounceTimer;
 
         function calculate() {
-            // Get inputs
+            // Read inputs
             const rentInitial = parseFloat(document.getElementById('rent').value) || 0;
             const housePrice = parseFloat(document.getElementById('price').value) || 0;
             const years = parseInt(document.getElementById('years').value) || 30;
@@ -472,25 +500,19 @@
             const totalMonths = years * 12;
             document.getElementById('resYears').innerText = years;
 
-            // --- BUYER SIMULATION ---
+            // Engine Logic
             const downPayment = housePrice * dpPercent;
             let currentLoan = housePrice - downPayment;
             const r = mRate / 12;
             
-            let monthlyMortgage = 0;
-            if (r > 0) {
-                monthlyMortgage = currentLoan * (r * Math.pow(1 + r, totalMonths)) / (Math.pow(1 + r, totalMonths) - 1);
-            } else {
-                monthlyMortgage = currentLoan / totalMonths;
-            }
+            let monthlyMortgage = (r > 0) ? 
+                currentLoan * (r * Math.pow(1 + r, totalMonths)) / (Math.pow(1 + r, totalMonths) - 1) : 
+                currentLoan / totalMonths;
 
             let currentHouseVal = housePrice;
-
-            // --- RENTER SIMULATION ---
             let renterPortfolio = downPayment;
             let currentRent = rentInitial;
 
-            // --- TIME LOOP ---
             for (let month = 1; month <= totalMonths; month++) {
                 let monthlyMaint = (currentHouseVal * maintPercent) / 12;
                 let buyerMonthlyCost = monthlyMortgage + monthlyMaint;
@@ -509,25 +531,27 @@
                 }
             }
 
-            // --- FINAL CALC ---
             const targetBuy = (currentHouseVal * 0.94) - Math.max(0, currentLoan);
             const targetRent = renterPortfolio;
 
-            // --- GSAP NUMBER ANIMATION (The Magic) ---
+            // --- VISUAL UPDATE (GSAP) ---
             gsap.to(currentDisplayVals, {
                 buy: targetBuy,
                 rent: targetRent,
-                duration: 1.2,
+                duration: 1,
                 ease: "power2.out",
                 onUpdate: () => {
-                    document.getElementById('outBuy').innerText = fmt.format(currentDisplayVals.buy);
-                    document.getElementById('outRent').innerText = fmt.format(currentDisplayVals.rent);
+                    document.getElementById('outBuyVis').innerText = fmt.format(currentDisplayVals.buy);
+                    document.getElementById('outRentVis').innerText = fmt.format(currentDisplayVals.rent);
                 },
-                onComplete: () => updateVerdict(targetBuy, targetRent)
+                onComplete: () => {
+                    updateVerdictUI(targetBuy, targetRent);
+                    updateScreenReader(targetBuy, targetRent, years); // Speak only when math finishes
+                }
             });
         }
 
-        function updateVerdict(buyerNetWorth, renterNetWorth) {
+        function updateVerdictUI(buyerNetWorth, renterNetWorth) {
             const cardBuy = document.getElementById('cardBuy');
             const cardRent = document.getElementById('cardRent');
             const msg = document.getElementById('verdictMsg');
@@ -542,6 +566,20 @@
                 cardRent.classList.add('winner');
                 msg.innerHTML = `🏆 <strong>RENTING & INVESTING</strong> is better by ${fmt.format(renterNetWorth - buyerNetWorth)}.`;
             }
+        }
+
+        // --- ACCESSIBILITY: Screen Reader Announcement ---
+        // Debounce prevents SR from spamming while user is dragging the slider
+        function updateScreenReader(buyerNetWorth, renterNetWorth, years) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                const srText = document.getElementById('srAnnouncement');
+                let outcome = buyerNetWorth > renterNetWorth ? 
+                    `Buying is better by ${fmt.format(buyerNetWorth - renterNetWorth)}` : 
+                    `Renting is better by ${fmt.format(renterNetWorth - buyerNetWorth)}`;
+                
+                srText.innerText = `Calculation complete for ${years} years. Projected buyer net worth is ${fmt.format(buyerNetWorth)}. Projected renter net worth is ${fmt.format(renterNetWorth)}. Verdict: ${outcome}.`;
+            }, 500); // Wait half a second after animation to speak
         }
     </script>
 </body>
